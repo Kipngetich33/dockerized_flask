@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dockerized_flaks
+  labels:
+    app: dockerized_flaks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dockerized_flaks
+  template:
+    metadata:
+      labels:
+        app: dockerized_flaks
+    spec:
+      containers:
+      - name: dockerized_flaks
+        image: kipngetich/dockerized_flaks
+        ports:
+        - containerPort: 8080
+        env:
+        - name: FLASK_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dockerized_flaks-service
+  labels:
+    app: dockerized_flaks
+spec:
+  selector:
+    app: dockerized_flaks
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: LoadBalancer
